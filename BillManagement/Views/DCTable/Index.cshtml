@@ -1,0 +1,31 @@
+﻿@model IEnumerable<BillManagement.Models.Dctable>
+@{
+    ViewData["Title"] = "DC List";
+}
+<h2>DC List</h2>
+<a href="@Url.Action("Create")" class="btn btn-primary">Add DC</a>
+<a href="@Url.Action("Index", "Product")" class="btn btn-warning">Product</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>DcNo</th>
+            <th>Date</th>
+       @*     <th>Invoice Check</th>*@
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var dc in Model)
+        {
+            <tr>
+                <td>@dc.DcNo</td>
+                <td>@dc.Date</td>
+            @*    <td>@dc.InvoiceCheck</td>*@
+                <td>
+                    <a href="@Url.Action("Edit", new { id = dc.DcPk })" class="btn btn-warning">Edit</a>
+                    <a href="@Url.Action("Delete", new { id = dc.DcPk })" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,32 @@
+﻿@model BillManagement.Models.Product
+
+<div>
+    <form method="post">
+        <label class="form-label mt-1">PO Number</label>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="PONo" placeholder="PO Number" asp-for="PONumber">
+            <label for="PONo">PO Number</label>
+        </div>
+        <label class="form-label mt-1">Product Name</label>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="productName" placeholder="Product Name" autocomplete="off" asp-for="Name">
+            <label for="productName">Product Name</label>
+        </div>
+        <label class="form-label mt-1">HSN Number</label>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="HSNNo" placeholder="HSN Number" autocomplete="off" asp-for="HSN">
+            <label for="HSNNo">HSN Number</label>
+        </div>
+        <label class="form-label mt-1">Product Price</label>
+        <div class="form-floating mb-3">
+            <input type="number" class="form-control" id="productPrice" placeholder="Product Price" autocomplete="off" asp-for="Price">
+            <label for="productPrice">Product Price</label>
+        </div>
+        <label class="form-label mt-1">Active</label>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="productActive" checked="" asp-for="Active">
+            <label class="form-check-label" for="productActive">Active</label>
+        </div>
+        <div class="float-end"><button type="submit" class="btn btn-success">Submit</button></div>
+    </form>
+</div>

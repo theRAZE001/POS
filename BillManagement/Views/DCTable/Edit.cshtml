@@ -1,0 +1,126 @@
+﻿@model BillManagement.Models.Dctable
+@{
+    ViewData["Title"] = "Edit DC";
+}
+<h2>Edit DC</h2>
+<form asp-action="Edit" method="post">
+    <div class="form-group">
+        <label asp-for="DcNo"></label>
+        <input asp-for="DcNo" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label asp-for="Date"></label>
+        <input asp-for="Date" class="form-control" type="date" />
+    </div>
+
+    <h3>Products</h3>
+    <table class="table" id="productTable">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>PO No</th>
+                <th>Rate</th>
+                <th>Qty</th>
+                <th>Amount</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dcProduct in ViewBag.DCProducts)
+            {
+                <tr data-index="@dcProduct.DcProductPk">
+                    <td>
+                        <select class="form-control product-select" name="dcProducts[@dcProduct.DcProductPk].ProductId" required>
+                            @foreach (var product in ViewBag.Products)
+                            {
+                                <option value="@product.Id" data-rate="@product.Rate" >@product.ProductName</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control po-no" name="dcProducts[@dcProduct.DcProductPk].PONo" value="@dcProduct.PONo" readonly />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control rate" name="dcProducts[@dcProduct.DcProductPk].Rate" value="@dcProduct.Rate" readonly />
+                    </td>
+                    <td>
+                        <input type="number" class="form-control qty" name="dcProducts[@dcProduct.DcProductPk].Qty" value="@dcProduct.Qty" required />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control amount" name="dcProducts[@dcProduct.DcProductPk].Amount" value="@dcProduct.Amount" readonly />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger remove-product">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="button" id="addProduct" class="btn btn-success">Add Product</button>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        let productCount = @ViewBag.DCProducts.Count;
+
+        $('#addProduct').click(function() {
+            const products = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Products));
+            let productOptions = '';
+            products.forEach(product => {
+                productOptions += `<option value="${product.id}" data-rate="${product.rate}">${product.productName}</option>`;
+            });
+
+            $('#productTable tbody').append(`
+                <tr data-index="${productCount}">
+                    <td>
+                        <select class="form-control product-select" name="dcProducts[${productCount}].ProductId" required>
+                            ${productOptions}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control po-no" name="dcProducts[${productCount}].PONo" readonly />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control rate" name="dcProducts[${productCount}].Rate" readonly />
+                    </td>
+                    <td>
+                        <input type="number" class="form-control qty" name="dcProducts[${productCount}].Qty" required />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control amount" name="dcProducts[${productCount}].Amount" readonly />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger remove-product">Remove</button>
+                    </td>
+                </tr>
+            `);
+
+            productCount++;
+        });
+
+        $(document).on('change', '.product-select', function() {
+            const rate = $(this).find(':selected').data('rate');
+            const row = $(this).closest('tr');
+            row.find('.rate').val(rate);
+            calculateAmount(row);
+        });
+
+        $(document).on('input', '.qty', function() {
+            const row = $(this).closest('tr');
+            calculateAmount(row);
+        });
+
+        $(document).on('click', '.remove-product', function() {
+            $(this).closest('tr').remove();
+        });
+
+        function calculateAmount(row) {
+            const rate = row.find('.rate').val();
+            const qty = row.find('.qty').val();
+            const amount = rate * qty;
+            row.find('.amount').val(amount);
+        }
+    });
+</script>
